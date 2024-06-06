@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome to Your App{% endblock %}
+
+{% block extra_head %}
+<style>
+    a {
+    text-decoration: none;
+    color: inherit;
+  }
+  a:hover {
+    text-decoration: none;
+    color: inherit;
+  }
+    .hero {
+        background-image: url(../static/images/work-safety-protection-equipment-flat-lay-on-wood-2021-08-28-14-50-18-utc.jpg);
+        background-size: cover;
+        background-position: center;
+        height: 500px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #f8f9fa;
+        text-align: center;
+    }
+
+    .hero h1 {
+        font-size: 4rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .features {
+        padding: 50px 0;
+    }
+
+    .features .card {
+        background-color: #343a40;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
+        cursor: pointer;
+    }
+
+    .features .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .features .card a {
+        color: inherit;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <div class="container">
+        <h1>Varstvo Pri Delu</h1>
+        <p class="lead">Uporabniška aplikacija za enostavno prijavo na izpit.</p>
+    </div>
+</div>
+
+<div class="features">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <a href="{% url 'prijavnice' %}">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Prijavnice</h5>
+                            <p class="card-text">Ogled vseh prijavnic</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="{% url 'prijavnica' %}">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Prijava na test</h5>
+                            <p class="card-text">Prijavi se na test za varnost pri delu.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="{% url 'prijavnice' %}">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Feature 3</h5>
+                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

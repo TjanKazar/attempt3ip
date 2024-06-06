@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}All Prijavnica{% endblock %}
+
+{% block extra_head %}
+<style>
+    .table {
+        background-color: #343a40;
+        color: #f8f9fa;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .table th {
+        background-color: #495057;
+        color: #f8f9fa;
+    }
+
+    .table tr:nth-child(even) {
+        background-color: #212529;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">All Prijavnica</h1>
+    {% if prijavnica_list %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Ime</th>
+                    <th>Datum</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prijavnica in prijavnica_list %}
+                <tr>
+                    <td>{{ prijavnica.ime }}</td>
+                    <td>{{ prijavnica.datum }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p>No Prijavnica instances found.</p>
+    {% endif %}
+</div>
+{% endblock %}
