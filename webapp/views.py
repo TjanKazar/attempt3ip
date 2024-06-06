@@ -8,7 +8,7 @@ from .forms import UserPrijavaForm
 from .models import Prijavnica
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
-
+my_variable = 10
 @login_required
 def home(request):
     if request.user.is_staff:
@@ -91,3 +91,27 @@ def edit_prijavnica(request, prijavnica_id):
         return redirect(reverse("home"))
     
     return render(request, "edit_prijavnica.html", {"prijavnica_instance": prijavnica_instance})
+
+
+def kpi(request):
+    prijava_count = Prijavnica.objects.count()
+    valid_count = Prijavnica.objects.filter(valid=True).count()
+    false_count = Prijavnica.objects.filter(valid=False).count()
+    none_count = Prijavnica.objects.filter(valid=None).count()
+    
+    context = {
+        'count': prijava_count,
+        'valid_count': valid_count,
+        'false_count': false_count,
+        'none_count': none_count
+    }
+    if prijava_count > 0:
+        valid_percentage = (valid_count / prijava_count) * 100
+    else:
+        valid_percentage = 0
+    valid_percentage = "{:.2f}".format(valid_percentage)
+    context = {
+        'count': prijava_count,
+        'valid_percentage': valid_percentage
+    }
+    return render(request, 'kpi.html', context)
