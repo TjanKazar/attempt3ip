@@ -9,5 +9,6 @@ urlpatterns = [
     path("prijavnice/", views.prijavnice, name="prijavnice"),
     path("prijavnica/", views.prijavnica, name="prijavnica"),
     path('edit_prijavnica/<int:prijavnica_id>', views.edit_prijavnica, name='edit_prijavnica'),
+    path("user_prijavnice/", views.user_prijavnice, name="user_prijavnice"),
 ]
  

@@ -37,16 +37,23 @@ def prijavnice(request):
 @login_required
 def prijavnica(request):
     if request.user.is_staff:
-        return redirect(reverse('home'))
+       return redirect(reverse('home'))
     
     if request.method == "POST":
         form = PrijavaForm(request.POST)
         if form.is_valid():
-            form.save()
+            prijavnica = form.save(commit=False)
+            prijavnica.user = request.user
+            prijavnica.save()
             return redirect(reverse("home"))
     else:
         form = PrijavaForm()
     return render(request, "prijavnica.html", {"form": form})
+
+@login_required
+def user_prijavnice(request):
+    user_prijavnice_list = Prijavnica.objects.filter(user=request.user)
+    return render(request, 'user_prijavnice.html', {'prijavnice_list': user_prijavnice_list})
 
 @login_required
 @csrf_exempt
