@@ -13,6 +13,9 @@
             <th>Telefon</th>
             <th>Dejavnost</th>
             <th>Datum Rojstva</th>
+            <th>Valid</th>
+            <th>Komentar</th>
+            <th>Akcije</th>
         </tr>
     </thead>
     <tbody>
@@ -24,10 +27,21 @@
             <td>{{ prijavnica.phone }}</td>
             <td>{{ prijavnica.dejavnost }}</td>
             <td>{{ prijavnica.datumrojstva }}</td>
+            <td>{{ prijavnica.valid }}</td>
+            <td>
+                {% if prijavnica.valid is False %}
+                    {{ prijavnica.komentar }}
+                {% endif %}
+            </td>
+            <td>
+                {% if prijavnica.valid is False %}
+                    <a href="{% url 'user_edit_prijavnica' prijavnica.id %}" class="btn btn-primary">Uredi</a>
+                {% endif %}
+            </td>
         </tr>
         {% empty %}
         <tr>
-            <td colspan="6" class="text-center">Ni prijavnic za prikaz</td>
+            <td colspan="9" class="text-center">Ni prijavnic za prikaz</td>
         </tr>
         {% endfor %}
     </tbody>

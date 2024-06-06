@@ -6,6 +6,7 @@ from django.urls import reverse
 from .forms import PrijavaForm
 from .models import Prijavnica
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
 
 @login_required
 def home(request):
@@ -54,6 +55,20 @@ def prijavnica(request):
 def user_prijavnice(request):
     user_prijavnice_list = Prijavnica.objects.filter(user=request.user)
     return render(request, 'user_prijavnice.html', {'prijavnice_list': user_prijavnice_list})
+
+@login_required
+def user_edit_prijavnica(request, pk):
+    prijavnica = get_object_or_404(Prijavnica, pk=pk, user=request.user)
+    if request.method == "POST":
+        form = PrijavaForm(request.POST, instance=prijavnica)
+        if form.is_valid():
+            prijavnica = form.save(commit=False)
+            prijavnica.valid = None  # Reset the validation status
+            prijavnica.save()
+            return redirect('user_prijavnice')
+    else:
+        form = PrijavaForm(instance=prijavnica)
+    return render(request, 'user_edit_prijavnica.html', {'form': form})
 
 @login_required
 @csrf_exempt
