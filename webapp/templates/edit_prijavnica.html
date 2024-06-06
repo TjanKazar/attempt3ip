@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Prijavnica{% endblock %}
+
+{% block extra_head %}
+<style>
+    .form-label {
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Edit Prijavnica</h1>
+    <form method="POST" action="{% url 'edit_prijavnica' prijavnica_instance.id, komentar %}">
+        {% csrf_token %}
+        <div class="form-group mb-3">
+            <label for="komentar-field">Komentar</label>
+            <input type="text" name="komentar" id="komentar-field" class="form-control" value="{{ prijavnica_instance.komentar }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+    </form>
+</div>
+{% endblock %}

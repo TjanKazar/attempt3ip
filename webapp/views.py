@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .forms import PrijavaForm
 from .models import Prijavnica
+from django.views.decorators.csrf import csrf_exempt
 
 @login_required
 def home(request):
@@ -46,3 +47,22 @@ def prijavnica(request):
     else:
         form = PrijavaForm()
     return render(request, "prijavnica.html", {"form": form})
+
+@login_required
+@csrf_exempt
+def edit_prijavnica(request, prijavnica_id):
+    prijavnica_instance = get_object_or_404(Prijavnica, pk=prijavnica_id)
+    
+    if request.method == "POST":
+        # Get the value of 'komentar' from the form
+        komentar = request.POST.get('komentar')
+        
+        # Update the 'komentar' field of the instance
+        prijavnica_instance.komentar = komentar
+        
+        # Save the instance
+        prijavnica_instance.save()
+        
+        return redirect(reverse("home"))
+    
+    return render(request, "edit_prijavnica.html", {"prijavnica_instance": prijavnica_instance})

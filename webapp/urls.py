@@ -8,5 +8,6 @@ urlpatterns = [
     path("logout/", auth_views.LogoutView.as_view(next_page="/"), name="logout"),
     path("prijavnice/", views.prijavnice, name="prijavnice"),
     path("prijavnica/", views.prijavnica, name="prijavnica"),
+    path('edit_prijavnica/<int:prijavnica_id>', views.edit_prijavnica, name='edit_prijavnica'),
 ]
  

@@ -32,14 +32,44 @@
             <thead>
                 <tr>
                     <th>Ime</th>
-                    <th>Datum</th>
+                    <th>Priimek</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Dejavnost</th>
+                    <th>Datum Rojstva</th>
+                    <th>Valid</th>
+                    <th>Komentar</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for prijavnica in prijavnica_list %}
                 <tr>
                     <td>{{ prijavnica.ime }}</td>
-                    <td>{{ prijavnica.datum }}</td>
+                    <td>{{ prijavnica.priimek }}</td>
+                    <td>{{ prijavnica.email }}</td>
+                    <td>{{ prijavnica.phone }}</td>
+                    <td>{{ prijavnica.dejavnost }}</td>
+                    <td>{{ prijavnica.datumrojstva }}</td>
+                    <td>
+                        {% if prijavnica.valid is None %}
+                            Nepreverjeno
+                        {% elif prijavnica.valid %}
+                            Yes
+                        {% else %}
+                            No
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="POST" action="{% url 'edit_prijavnica' prijavnica.id %}?komentar={{ prijavnica.komentar }}&valid={{ prijavnica.valid }}">
+                            {% csrf_token %}
+                            <input type="text" name="komentar" value="">
+                            <input type="checkbox" name="valid" {% if prijavnica.valid %}checked{% endif %}>
+                            <button type="submit" class="btn btn-primary">Edit</button>
+                        </form>
+                        
+
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
