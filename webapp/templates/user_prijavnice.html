@@ -41,6 +41,8 @@
             <td>
                 {% if prijavnica.valid is False %}
                     {{ prijavnica.komentar }}
+                {% elif prijavnica.valid is True %}
+                    Več informacij bo posredovano na vaš e-naslov v naslednjih 24 urah.
                 {% endif %}
             </td>
             <td>
