@@ -11,6 +11,5 @@ urlpatterns = [
     path('edit_prijavnica/<int:prijavnica_id>', views.edit_prijavnica, name='edit_prijavnica'),
     path("user_prijavnice/", views.user_prijavnice, name="user_prijavnice"),
     path("prijavnica/edit/<int:pk>/", views.user_edit_prijavnica, name="user_edit_prijavnica"),
-
 ]
  

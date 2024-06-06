@@ -5,3 +5,8 @@ class PrijavaForm(forms.ModelForm):
     class Meta:
         model = Prijavnica
         fields = ['ime', 'priimek', 'email', 'phone', 'dejavnost', 'datumrojstva', 'valid', 'komentar']
+
+class UserPrijavaForm(forms.ModelForm):
+    class Meta:
+        model = Prijavnica
+        fields = ['ime', 'priimek', 'email', 'phone', 'dejavnost', 'datumrojstva']
