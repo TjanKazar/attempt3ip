@@ -56,9 +56,11 @@ def edit_prijavnica(request, prijavnica_id):
     if request.method == "POST":
         # Get the value of 'komentar' from the form
         komentar = request.POST.get('komentar')
+        valid = 'valid' in request.POST
         
         # Update the 'komentar' field of the instance
         prijavnica_instance.komentar = komentar
+        prijavnica_instance.valid = valid
         
         # Save the instance
         prijavnica_instance.save()

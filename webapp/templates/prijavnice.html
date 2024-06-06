@@ -1,15 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}All Prijavnica{% endblock %}
+{% block title %}Vse Prijavnice{% endblock %}
 
 {% block extra_head %}
 <style>
     .table {
         background-color: #343a40;
         color: #f8f9fa;
-        border-radius: 10px;
         overflow: hidden;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
 
     .table th {
@@ -25,7 +23,7 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="mb-4">All Prijavnica</h1>
+    <h1 class="mb-4">Vse Prijavnice</h1>
     {% if prijavnica_list %}
     <div class="table-responsive">
         <table class="table table-striped">
@@ -33,13 +31,12 @@
                 <tr>
                     <th>Ime</th>
                     <th>Priimek</th>
-                    <th>Email</th>
                     <th>Phone</th>
                     <th>Dejavnost</th>
                     <th>Datum Rojstva</th>
                     <th>Valid</th>
                     <th>Komentar</th>
-                    <th>Actions</th>
+                    <th>Potrdi</th>
                 </tr>
             </thead>
             <tbody>
@@ -47,7 +44,6 @@
                 <tr>
                     <td>{{ prijavnica.ime }}</td>
                     <td>{{ prijavnica.priimek }}</td>
-                    <td>{{ prijavnica.email }}</td>
                     <td>{{ prijavnica.phone }}</td>
                     <td>{{ prijavnica.dejavnost }}</td>
                     <td>{{ prijavnica.datumrojstva }}</td>
@@ -63,9 +59,15 @@
                     <td>
                         <form method="POST" action="{% url 'edit_prijavnica' prijavnica.id %}?komentar={{ prijavnica.komentar }}&valid={{ prijavnica.valid }}">
                             {% csrf_token %}
-                            <input type="text" name="komentar" value="">
-                            <input type="checkbox" name="valid" {% if prijavnica.valid %}checked{% endif %}>
-                            <button type="submit" class="btn btn-primary">Edit</button>
+                            <input type="text" name="komentar" value="{{ prijavnica_instance.komentar }}">
+                            <label for="valid">Validna Prijava ?</label>
+                            <input type="checkbox" name="valid" {% if prijavnica_instance.valid %}checked{% endif %}>
+                            <br>
+                            <td>
+
+                                <button type="submit" class="btn btn-primary">Uredi
+                                </button>
+                            </td>
                         </form>
                         
 
