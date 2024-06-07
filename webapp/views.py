@@ -64,7 +64,7 @@ def user_edit_prijavnica(request, pk):
         form = UserPrijavaForm(request.POST, instance=prijavnica)
         if form.is_valid():
             prijavnica = form.save(commit=False)
-            prijavnica.valid = None  # Reset the validation status
+            prijavnica.valid = None 
             prijavnica.save()
             return redirect('user_prijavnice')
     else:
@@ -77,15 +77,12 @@ def edit_prijavnica(request, prijavnica_id):
     prijavnica_instance = get_object_or_404(Prijavnica, pk=prijavnica_id)
     
     if request.method == "POST":
-        # Get the value of 'komentar' from the form
         komentar = request.POST.get('komentar')
         valid = 'valid' in request.POST
         
-        # Update the 'komentar' field of the instance
         prijavnica_instance.komentar = komentar
         prijavnica_instance.valid = valid
         
-        # Save the instance
         prijavnica_instance.save()
         
         return redirect(reverse("home"))
@@ -99,19 +96,21 @@ def kpi(request):
     false_count = Prijavnica.objects.filter(valid=False).count()
     none_count = Prijavnica.objects.filter(valid=None).count()
     
-    context = {
-        'count': prijava_count,
-        'valid_count': valid_count,
-        'false_count': false_count,
-        'none_count': none_count
-    }
+   
     if prijava_count > 0:
         valid_percentage = (valid_count / prijava_count) * 100
     else:
         valid_percentage = 0
     valid_percentage = "{:.2f}".format(valid_percentage)
+    print("Valid Count:", valid_count)
+    print("False Count:", false_count)
+    print("None Count:", none_count)
     context = {
         'count': prijava_count,
+        'valid_count': valid_count,
+        'false_count': false_count,
+        'none_count': none_count,
         'valid_percentage': valid_percentage
+
     }
     return render(request, 'kpi.html', context)

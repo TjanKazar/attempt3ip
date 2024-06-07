@@ -64,7 +64,7 @@
         labels: ['Potrjeno', 'Zavrnjeno', 'Nepregledanoeno'],
         datasets: [{
           label: '# of Votes',
-          data: [3, 1, 6],
+          data: [{{ valid_count }}, {{ false_count }}, {{ none_count }}],
           borderWidth: 1
         }]
       },
