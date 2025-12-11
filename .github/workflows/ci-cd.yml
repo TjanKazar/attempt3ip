@@ -1,0 +1,161 @@
+name: CI/CD Pipeline - Tests & Coverage
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  backend-tests:
+    name: Backend Tests (Django)
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          cd attempt3ip
+          python -m pip install --upgrade pip
+          pip install Django coverage
+      
+      - name: Run Django Tests with Coverage
+        run: |
+          cd attempt3ip
+          coverage run --source='webapp' manage.py test webapp
+          coverage report
+          coverage xml
+      
+      - name: Upload Backend Coverage Reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend-coverage-reports-py${{ matrix.python-version }}
+          path: attempt3ip/coverage.xml
+          retention-days: 30
+      
+      - name: Comment Test Results on PR
+        if: github.event_name == 'pull_request'
+        run: |
+          cd attempt3ip
+          echo "## Backend Tests Report (Python ${{ matrix.python-version }})" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          coverage report >> $GITHUB_STEP_SUMMARY
+  
+  frontend-tests:
+    name: Frontend Tests (Jest)
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'attempt3ip/package.json'
+      
+      - name: Install dependencies
+        run: |
+          cd attempt3ip
+          npm install
+      
+      - name: Run Jest Tests with Coverage
+        run: |
+          cd attempt3ip
+          npm test -- --coverage --coverageDirectory=coverage
+      
+      - name: Upload Frontend Coverage Reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-coverage-reports
+          path: attempt3ip/coverage
+          retention-days: 30
+      
+      - name: Comment Test Results on PR
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "## Frontend Tests Report (Jest)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Jest tests executed successfully" >> $GITHUB_STEP_SUMMARY
+  
+  coverage-report:
+    name: Code Coverage Analysis
+    runs-on: ubuntu-latest
+    needs: [backend-tests, frontend-tests]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Download All Coverage Reports
+        uses: actions/download-artifact@v3
+        with:
+          path: all-coverage
+      
+      - name: Generate Coverage Summary
+        run: |
+          echo "# Code Coverage Reports" > coverage-summary.md
+          echo "" >> coverage-summary.md
+          echo "## Backend Coverage" >> coverage-summary.md
+          echo "Generated from Django coverage runs" >> coverage-summary.md
+          echo "" >> coverage-summary.md
+          echo "## Frontend Coverage" >> coverage-summary.md
+          echo "Generated from Jest coverage runs" >> coverage-summary.md
+          echo "" >> coverage-summary.md
+          ls -la all-coverage >> coverage-summary.md
+      
+      - name: Upload All Coverage as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: combined-coverage-reports
+          path: all-coverage
+          retention-days: 60
+      
+      - name: Display Coverage Summary
+        run: |
+          echo "## Combined Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Artifacts Generated:" >> $GITHUB_STEP_SUMMARY
+          echo "- Backend Coverage (Django)" >> $GITHUB_STEP_SUMMARY
+          echo "- Frontend Coverage (Jest)" >> $GITHUB_STEP_SUMMARY
+          echo "- Combined Coverage Reports" >> $GITHUB_STEP_SUMMARY
+
+  test-summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs: [backend-tests, frontend-tests, coverage-report]
+    if: always()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Create Test Summary
+        run: |
+          echo "# Test Execution Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "- **Backend Tests**: ${{ needs.backend-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Frontend Tests**: ${{ needs.frontend-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Coverage Analysis**: ${{ needs.coverage-report.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Test Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "- Backend: Django unit tests covering models, views, and forms" >> $GITHUB_STEP_SUMMARY
+          echo "- Frontend: Jest tests covering chart validation and form utilities" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Artifacts Available" >> $GITHUB_STEP_SUMMARY
+          echo "Coverage reports are available in the Actions tab under artifacts." >> $GITHUB_STEP_SUMMARY
